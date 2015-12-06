@@ -1,12 +1,14 @@
+//unused class
+
 #include "Kinect/KinectCore.h"
 #include "QDebug"
 
 #include "Kinect/KinectThread.h"
 #include "Kinect/KinectWindow.h"
-#include "QOpenCV/OpenCVWindow.h"
+//#include "QOpenCV/OpenCVWindow.h"
 
-#include "Core/Core.h"
-#include "Viewer/CameraManipulator.h"
+//#include "Core/Core.h"
+//#include "Viewer/CameraManipulator.h"
 
 Kinect::KinectCore* Kinect::KinectCore::mKinectCore;
 
@@ -16,7 +18,7 @@ Kinect::KinectCore::KinectCore( QApplication* app,QWidget* parent )
 	mParent=parent;
 	this->app=app;
 
-	mOpencvWindow=NULL;
+//	mOpencvWindow=NULL;
 
 	mThrsCreated=false;
 	mThrKinect=NULL;

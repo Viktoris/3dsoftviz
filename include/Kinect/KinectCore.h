@@ -1,3 +1,5 @@
+//unused
+
 #ifndef KinectCORE_H
 #define KinectCORE_H
 
@@ -6,10 +8,6 @@
 namespace Kinect {
 class KinectThread;
 class KinectWindow;
-}
-
-namespace QOpenCV {
-class OpenCVWindow;
 }
 
 namespace Kinect {
@@ -79,7 +77,7 @@ private:
 	/**
 	 * @brief OpenCV Window
 	 */
-	QPointer<QOpenCV::OpenCVWindow> mOpencvWindow;
+//	QPointer<QOpenCV::OpenCVWindow> mOpencvWindow;
 
 };
 }

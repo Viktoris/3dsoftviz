@@ -1,11 +1,9 @@
 #include "Kinect/KinectHandTracker.h"
-#include "Viewer/MouseControl.h"
 #include "QDebug"
-#include "Viewer/GraphNavigation.h"
 
 #ifdef NITE2_FOUND
 
-Kinect::KinectHandTracker::KinectHandTracker( openni::Device* device, openni::VideoStream* m_depth ) :
+Kinect::KinectHandTracker::KinectHandTracker( openni::Device* device, openni::VideoStream* m_depth, Kinect::AbstractViewer* vwr, Kinect::AbstractMouseCtrl* mouseCtrl ) :
 	numHandsTracking( 0 ),
 	isGestureClick( false ),
 	//handZ{0, 0} //C++11
@@ -20,10 +18,10 @@ Kinect::KinectHandTracker::KinectHandTracker( openni::Device* device, openni::Vi
 	gesto_doprava( false ),
 	gesto_hore( false ),
 	gesto_dole( false ),
-	viewer( AppCore::Core::getInstance()->getCoreWindow()->GetViewerQt() ),
-	nav( nullptr ),
+	viewer( vwr ),
+	//nav( nullptr ), unused
 	isCursorMovementEnable( true ),
-	mouse( new Vwr::MouseControl() ),
+	mouse( mouseCtrl ),
 	mDepth( m_depth ),
 	mDepthX( 0 ),
 	mDepthY( 0 ),
@@ -219,20 +217,24 @@ void Kinect::KinectHandTracker::getRotatingMove()
 void Kinect::KinectHandTracker::moveGraphByHand( )
 {
 	if ( gesto_dolava ) {
-		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Left );
-		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Left );
+		viewer->typeKey(osgGA::GUIEventAdapter::KEY_Left);
+//		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Left );
+//		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Left );
 	}
 	else if ( gesto_doprava ) {
-		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Right );
-		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Right );
+		viewer->typeKey(osgGA::GUIEventAdapter::KEY_Right);
+//		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Right );
+//		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Right );
 	}
 	if ( gesto_hore ) {
-		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Page_Up );
-		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Page_Up );
+		viewer->typeKey(osgGA::GUIEventAdapter::KEY_Page_Up);
+//		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Page_Up );
+//		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Page_Up );
 	}
 	else if ( gesto_dole ) {
-		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Page_Down );
-		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Page_Down );
+		viewer->typeKey(osgGA::GUIEventAdapter::KEY_Page_Down);
+//		viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Page_Down );
+//		viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Page_Down );
 	}
 }
 void Kinect::KinectHandTracker::moveGraphByHandToDepth( float deltaZ )
@@ -240,12 +242,14 @@ void Kinect::KinectHandTracker::moveGraphByHandToDepth( float deltaZ )
 	// trashold
 	if ( abs( deltaZ ) > 7.0f ) {
 		if ( deltaZ > 0 ) {
-			viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Up );
-			viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Up );
+			viewer->typeKey(osgGA::GUIEventAdapter::KEY_Up);
+//			viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Up );
+//			viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Up );
 		}
 		else {
-			viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Down );
-			viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Down );
+			viewer->typeKey(osgGA::GUIEventAdapter::KEY_Down);
+//			viewer->getEventQueue()->keyPress( osgGA::GUIEventAdapter::KEY_Down );
+//			viewer->getEventQueue()->keyRelease( osgGA::GUIEventAdapter::KEY_Down );
 		}
 	}
 }

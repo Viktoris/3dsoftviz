@@ -3,8 +3,10 @@
 
 #include "Kinect/HistoryBuffer.h"
 #include "OpenNI.h"
-#include "Core/Core.h"
-#include "Math/CameraMath.h"
+
+#include "Kinect/AbstractMouseCtrl.h"
+#include "Kinect/AbstractViewer.h"
+
 #include <map>
 
 #ifdef NITE2_FOUND
@@ -12,11 +14,6 @@
 #include "NiTE.h"
 
 #define NUM_HANDS 2
-
-namespace Vwr {
-class GraphNavigation;
-class MouseControl;
-}
 
 namespace Kinect {
 class KinectRecognition;
@@ -36,7 +33,7 @@ public:
 	 * @param device device for recognition
 	 * @param m_depth Videostream
 	 */
-	KinectHandTracker( openni::Device* device,openni::VideoStream*  m_depth );
+	KinectHandTracker(openni::Device* device, openni::VideoStream*  m_depth , AbstractViewer* vwr, AbstractMouseCtrl *mouseCtrl);
 	~KinectHandTracker();
 
 	//const nite::Array<nite::GestureData>& gestures;
@@ -131,8 +128,8 @@ private:
 	/**
 	 * @brief viewer
 	 */
-	QOSG::ViewerQT* viewer;
-	Vwr::GraphNavigation* nav;
+	Kinect::AbstractViewer* viewer;
+	//Vwr::GraphNavigation* nav; unused
 	//Marak ends
 
 	/**
@@ -144,7 +141,7 @@ private:
 	/**
 	 * @brief class for controlling mouse
 	 */
-	Vwr::MouseControl* mouse;
+	Kinect::AbstractMouseCtrl* mouse;
 
 	/**
 	 * @brief save videostream - get points

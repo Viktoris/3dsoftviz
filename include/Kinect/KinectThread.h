@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QImage>
 #include <QTimer>
+#include <QMap>
 
 #ifdef OPENNI2_FOUND
 #include "OpenNI.h"
@@ -14,14 +15,16 @@
 #endif
 
 #include <opencv2/core/core.hpp>
-#include "Viewer/GraphNavigation.h"
-#include "Viewer/MouseControl.h"
+#include "Kinect/AbstractGraphNav.h"
+#include "Kinect/AbstractMouseCtrl.h"
+#include "Kinect/AbstractViewer.h"
+
+#include "Kinect/KinectCore.h"
+#include "Kinect/KinectRecognition.h"
+#include "Kinect/KinectHandTracker.h"
+#include "Kinect/KinectZoom.h"
 
 namespace Kinect {
-
-class KinectThread;
-class KinectHandTracker;
-class KinectRecognition;
 
 /**
  * @author Matej Marconak
@@ -34,7 +37,7 @@ class KinectThread : public QThread
 
 public:
 
-	KinectThread( QObject* parent=0 );
+	KinectThread(AbstractMouseCtrl* mouseCtrl, AbstractViewer* viewer, AbstractGraphNav* graphNav, QMap<QString, QString>* appConfig, QObject* parent=0  );
 
 	~KinectThread( void );
 
@@ -139,8 +142,10 @@ private:
 	// Marak start
 	QTimer* clickTimer;
 	bool clickTimerFirstRun;
-	Vwr::GraphNavigation* nav;
-	Vwr::MouseControl* mouse;
+	AbstractGraphNav* nav;
+	AbstractMouseCtrl* mouse;
+	AbstractViewer* vwr;
+	QMap<QString, QString>* config;
 	// Marak end
 	/**
 	 * @brief information about status thread

@@ -2,13 +2,13 @@
 
 #include <vector>
 
-Kinect::KinectZoom::KinectZoom()
+Kinect::KinectZoom::KinectZoom(AbstractViewer *vwr)
 {
 	previousZ = 0.0f;
 	currentZ = 0.0f;
 	delta = 0.0f;
 	zoomThreshold=7.0f;
-	viewer = AppCore::Core::getInstance()->getCoreWindow()->GetViewerQt();
+	viewer = vwr;
 }
 
 Kinect::KinectZoom::~KinectZoom()
@@ -21,7 +21,7 @@ void Kinect::KinectZoom::zoom()
 {
 	delta = ( previousZ-currentZ );
 	if ( abs( delta ) > zoomThreshold ) {
-		viewer->getEventQueue()->mouseScroll2D( 0, delta*5.0f, 0 );
+		viewer->mouseScroll2D( 0, delta*5.0f, 0 );
 	}
 }
 

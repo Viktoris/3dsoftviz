@@ -1,15 +1,15 @@
-
 #include "Kinect/KinectThread.h"
-#include "Kinect/KinectCore.h"
-#include "Kinect/KinectRecognition.h"
-#include "Kinect/KinectHandTracker.h"
-#include "Kinect/KinectZoom.h"
 
 #include "QDebug"
 #include <string>
 
-Kinect::KinectThread::KinectThread( QObject* parent ) : QThread( parent )
+Kinect::KinectThread::KinectThread(Kinect::AbstractMouseCtrl* mouseCtrl, Kinect::AbstractViewer* viewer, Kinect::AbstractGraphNav* graphNav ,QMap<QString, QString>* appConfig, QObject* parent) : QThread( parent )
 {
+	mouse = mouseCtrl;
+	vwr = viewer;
+	nav = graphNav;
+	config = appConfig;
+
 	//initialize based atributes
 	mCancel=false;
 	mSpeed=1.0;
@@ -25,9 +25,6 @@ Kinect::KinectThread::KinectThread( QObject* parent ) : QThread( parent )
 	connect( this ,SIGNAL( signalClickTimerStop() ), this, SLOT( clickTimerStop() ) );
 	connect( this ,SIGNAL( signalClickTimerStart() ), this, SLOT( clickTimerStart() ) );
 	clickTimerFirstRun = true;
-
-	nav = new Vwr::GraphNavigation();
-	mouse = new Vwr::MouseControl();
 }
 
 Kinect::KinectThread::~KinectThread( void )
@@ -51,7 +48,7 @@ void Kinect::KinectThread::inicializeKinect()
 
 		//create hand tracker, TODO 2. parameter remove - unused
 #ifdef NITE2_FOUND
-		kht = new KinectHandTracker( &mKinect->device,&m_depth );
+		kht = new KinectHandTracker( &mKinect->device,&m_depth, vwr, mouse );
 #endif
 	}
 }
@@ -126,7 +123,7 @@ void Kinect::KinectThread::clickTimerStop()
 	// if gesture is click ( less than 500ms )
 	if ( clickTimerFirstRun ) {
 		// if navigation is enabled, do navigation click
-		if ( nav->isNavEnabled ) {
+		if ( nav->isNavEnabled() ) {
 			nav->selectNearestNode();
 		}
 		// else do basic click
@@ -158,7 +155,7 @@ void Kinect::KinectThread::run()
 		float pDepth_y2;
 		float pDepth_z2;
 	    /////////end////////////*/
-	Kinect::KinectZoom* zoom = new Kinect::KinectZoom();
+	Kinect::KinectZoom* zoom = new Kinect::KinectZoom(NULL);
 	cv::Mat frame;
 	cv::Mat depth;
 
@@ -179,14 +176,14 @@ void Kinect::KinectThread::run()
 			if ( captureImage ) {
 				depth = mKinect->depthImageCvMat( depthFrame );
 
-				std::string file = Util::ApplicationConfig::get()->getValue( "Kinect.OutputFolder" ).toStdString();
+				std::string file = config->value( "Kinect.OutputFolder" ).toStdString();
 
 
 				//save color frame
-				cv::imwrite( file + "\\" + Util::ApplicationConfig::get()->getValue( "Kinect.ColourImageName" ).toStdString()  + ".jpeg", frame );
+				cv::imwrite( file + "\\" + config->value( "Kinect.ColourImageName" ).toStdString()  + ".jpeg", frame );
 
 				//save depth matrix
-				std::ofstream fout( file + "\\" + Util::ApplicationConfig::get()->getValue( "Kinect.DepthInfoName" ).toStdString() + ".txt" );
+				std::ofstream fout( file + "\\" + config->value( "Kinect.DepthInfoName" ).toStdString() + ".txt" );
 				if ( !fout ) {
 					qDebug() <<"File Not Opened";
 				}
@@ -200,7 +197,7 @@ void Kinect::KinectThread::run()
 
 				cv::normalize( depth, depth, 0,255, CV_MINMAX, CV_8UC1 );
 				//save depth frame
-				cv::imwrite( file + "\\" + Util::ApplicationConfig::get()->getValue( "Kinect.DepthImageName" ).toStdString() + ".jpg", depth );
+				cv::imwrite( file + "\\" + config->value( "Kinect.DepthImageName" ).toStdString() + ".jpg", depth );
 
 				fout.close();
 				captureImage =  false;

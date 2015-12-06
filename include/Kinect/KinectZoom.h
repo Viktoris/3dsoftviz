@@ -7,7 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-#include "Core/Core.h"
+#include "Kinect/AbstractViewer.h"
 
 namespace Kinect {
 /**
@@ -22,7 +22,7 @@ public:
 	/**
 	 * @brief KinectZoom constructor to initialize values
 	 */
-	KinectZoom();
+	KinectZoom(Kinect::AbstractViewer* vwr);
 
 	~KinectZoom();
 
@@ -70,7 +70,7 @@ public:
 	/**
 	 * @brief viewer QT Viewer to simulate mouse scroll
 	 */
-	QOSG::ViewerQT* viewer;
+	Kinect::AbstractViewer* viewer;
 };
 }
 

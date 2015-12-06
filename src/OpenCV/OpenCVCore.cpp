@@ -72,7 +72,7 @@ void OpenCV::OpenCVCore::opencvInit()
 		mThrFaceRec	= new QOpenCV::FaceRecognitionThread();
 
 #ifdef OPENNI2_FOUND
-		mThrKinect = new Kinect::KinectThread();
+		mThrKinect = new Kinect::KinectThread(NULL,NULL,NULL,NULL); //TODO
 		mThrKinect->inicializeKinect();
 #endif
 
